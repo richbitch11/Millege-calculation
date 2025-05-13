@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>Mileage Calculator</title>
+<style>
+  /* Reset and base */
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #4e54c8, #8f94fb);
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 1rem;
+  }
+
+  .container {
+    background: rgba(255 255 255 / 0.1);
+    border-radius: 15px;
+    padding: 20px 25px;
+    width: 100%;
+    max-width: 350px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    user-select: none;
+  }
+
+  h1 {
+    text-align: center;
+    margin-bottom: 1.2rem;
+    font-weight: 700;
+    font-size: 1.6rem;
+    letter-spacing: 1px;
+  }
+
+  label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+    font-size: 0.9rem;
+  }
+
+  input[type="number"] {
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    border: none;
+    font-size: 1rem;
+    outline: none;
+    font-weight: 600;
+    color: #333;
+  }
+
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .note {
+    font-size: 0.75rem;
+    color: #ddd;
+    margin-top: -0.5rem;
+    margin-bottom: 1rem;
+    font-style: italic;
+  }
+
+  button {
+    width: 100%;
+    padding: 14px;
+    background: #6a82fb;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    user-select: none;
+  }
+  button:active {
+    background: linear-gradient(45deg, #764ba2, #667eea);
+  }
+
+  .result {
+    margin-top: 1.5rem;
+    background: rgba(255 255 255 / 0.15);
+    padding: 15px;
+    border-radius: 12px;
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-align: center;
+    letter-spacing: 0.5px;
+    min-height: 48px;
+  }
+
+  @media (max-height: 600px) {
+    body {
+      padding: 0.5rem;
+    }
+    .container {
+      padding: 15px 18px;
+    }
+    button {
+      padding: 12px;
+      font-size: 1rem;
+    }
+    input[type="number"] {
+      padding: 8px 10px;
+      font-size: 0.9rem;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="container" role="main" aria-label="Mileage Calculator Application">
+    <h1>Mileage Calculator</h1>
+
+    <form id="mileageForm" novalidate>
+      <label for="startOdometer">Start Odometer Reading (km or miles):</label>
+      <input type="number" id="startOdometer" name="startOdometer" min="0" step="any" autocomplete="off" required aria-required="true" />
+
+      <label for="endOdometer">End Odometer Reading (km or miles):</label>
+      <input type="number" id="endOdometer" name="endOdometer" min="0" step="any" autocomplete="off" required aria-required="true" />
+
+      <label for="fuelConsumed">Fuel Consumed (liters or gallons):</label>
+      <input type="number" id="fuelConsumed" name="fuelConsumed" min="0.01" step="any" autocomplete="off" required aria-required="true" />
+
+      <button type="submit" aria-label="Calculate mileage">Calculate Mileage</button>
+    </form>
+
+    <div class="result" id="result" aria-live="polite" role="region"></div>
+  </div>
+
+<script>
+  (function() {
+    const form = document.getElementById('mileageForm');
+    const resultDiv = document.getElementById('result');
+
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+      resultDiv.textContent = '';
+
+      // Get input values
+      const start = parseFloat(form.startOdometer.value);
+      const end = parseFloat(form.endOdometer.value);
+      const fuel = parseFloat(form.fuelConsumed.value);
+
+      // Validate inputs
+      if (isNaN(start) || isNaN(end) || isNaN(fuel)) {
+        resultDiv.textContent = 'Please enter valid numbers in all fields.';
+        return;
+      }
+      if (start < 0 || end < 0 || fuel <= 0) {
+        resultDiv.textContent = 'Please enter positive values. Fuel consumed must be greater than zero.';
+        return;
+      }
+      if (end <= start) {
+        resultDiv.textContent = 'End odometer reading must be greater than the start reading.';
+        return;
+      }
+
+      // Calculate mileage
+      const distance = end - start;
+      const mileage = distance / fuel;
+
+      // Determine unit label (just assume user uses consistent units)
+      const mileageRounded = mileage.toFixed(2);
+
+      resultDiv.textContent = `Mileage: ${mileageRounded} distance unit per unit of fuel`;
+    });
+  })();
+</script>
+</body>
+</html>
+
